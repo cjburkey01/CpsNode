@@ -48,49 +48,76 @@ app.use(pug('views'));
 app.use(mount('/static', serve('static')));
 staticRender('/', 'index');
 staticRender('/dogs', 'dogs');
+app.use(route.get('/dogs/:id', async (ctx, id) => {
+    let dog = 'five';
+    
+    let data = await processSearch('Available', 1, 0, [
+        'animalName',
+        'animalStatus',
+        'animalBirthdate',
+        'animalPictures',
+        'animalAdoptionFee',
+        'animalAltered',
+        'animalBirthdate',
+        'animalBirthdateExact',
+        'animalBreed',
+        'animalDescriptionPlain',
+        'animalAdoptionPending',
+        'animalSex',
+        'fosterEmail',
+        'fosterFirstname',
+        'fosterLastname',
+        'fosterName',
+    ], [
+        {
+            fieldName: 'animalID',
+            operation: 'equals',
+            criteria: id,
+        }
+    ]);
+    
+    console.log(JSON.stringify(data, null, 4));
+    
+    // Hacky way to get that first element
+    let dat;
+    for (let d in data.data) {
+        dat = data.data[d];
+        break;
+    }
+    
+    ctx.render('dogs', {
+        dog: dat,
+    });
+}));
 
 // API Routes
 app.use(route.get('/api/dog_list/:perPage/:page', async (ctx, perPage, page) => {
-    let data = await processSearch(perPage, page, [
+    let data = await processSearch('Available', perPage, page, [
+        'animalID',
         'animalName',
         'animalStatus',
-        'animalBirthdate',
         'animalPictures',
-    ], [
-        {
-            fieldName: 'animalStatus',
-            operation: 'equals',
-            criteria: 'Available',
-        },
-    ]);
-    ctx.body = data;
-}));
-app.use(route.get('/api/dog_data/:id', async (ctx, id) => {
-    let data = await processSearch(perPage, page, [
-        'animalName',
-        'animalStatus',
-        'animalBirthdate',
-        'animalPictures',
-    ], [
-        {
-            fieldName: 'animalStatus',
-            operation: 'equals',
-            criteria: 'Available',
-        },
-    ]);
+    ], []);
     ctx.body = data;
 }));
 
-async function processSearch(perPage, currentPage, results, filters) {
+async function processSearch(available, perPage, currentPage, results, filters) {
+    if (available !== undefined && available !== null) {
+        filters.push({
+            fieldName: 'animalStatus',
+            operation: 'equals',
+            criteria: available,
+        });
+    }
     let resp = await api.searchCps(perPage, currentPage, results, filters);
     
     // TERNARY MADNESS!
-    let dat = (resp == null) ? null : resp.data;
-    dat.error = ((dat != null && dat.status == 'ok')
+    let dat = (resp === null) ? null : resp.data;
+    dat.error = ((dat !== null && dat.status == 'ok')
         ? null
-        : ((dat != null
-            && dat.messages != null
-            && dat.messages.generalMessages != null
+        : ((dat !== null
+            && dat.messages !== null
+            && dat.messages.generalMessages !== null
             && dat.messages.generalMessages.length > 0)
                 ? (dat.messages.generalMessages[0].messageText)
                 : 'An error occurred'));

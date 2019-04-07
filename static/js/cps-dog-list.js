@@ -21,10 +21,10 @@ function init() {
 
 // This is what each dog's thumbnail looks like in plain HTML
 // String interpolation/templates are used to make it nicer to work with
-const dogThumbnailTemplate = (name, url) => {
+const dogThumbnailTemplate = (id, name, url) => {
     return `
         <div class="col-6 col-sm-4 col-md-3" style="padding-bottom: 15px;">
-            <a class="dog-list-link" href="#">
+            <a class="dog-list-link" href="/dogs/${id}">
                 <div class="dog-list-item">
                     <img class="img-fluid" src="${url}" alt="Picture of ${name}"/>
                     <h3 class="text-center font-weight-normal dog-list-name">${name}</h3>
@@ -59,7 +59,7 @@ function reloadDogs() {
         // Add the new dogs to the list
         console.log(`Loaded ${dogs.length} dogs`);
         for (let i in dogs) {
-            dogList.append(dogThumbnailTemplate(dogs[i].animalName, dogs[i].animalPictures[0].original.url))
+            dogList.append(dogThumbnailTemplate(dogs[i].animalID, dogs[i].animalName, dogs[i].animalPictures[0].original.url))
         }
         
         // Update the loading state
