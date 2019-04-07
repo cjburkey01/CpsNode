@@ -1,11 +1,17 @@
 {
   "name": "cpsnode",
   "version": "0.1.0",
-  "description": "The NodeJS adaptation of my Laravel application that might be a bit faster",
+  "description": "The (hopefully) faster NodeJS adaptation of my Laravel application",
   "main": "cps.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "author": "CJ Burkey",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "js-koa-pug": "^1.0.4",
+    "koa": "^2.7.0",
+    "koa-mount": "^4.0.0",
+    "koa-route": "^3.2.0",
+    "koa-static": "^5.0.0"
+  }
 }

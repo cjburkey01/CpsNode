@@ -1,0 +1,28 @@
+nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+  .container
+    a.navbar-brand(href='/') Cabarrus Pets
+    button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarCollapse')
+      span.navbar-toggler-icon
+    #navbarCollapse.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        -
+          let navItems = [
+            {
+              link: '/',
+              text: 'Home',
+              title: 'View the homepage',
+            },
+            {
+              link: '/dogs',
+              text: 'Available Dogs',
+              title: 'View the available dogs',
+            },
+            {
+              link: '/about',
+              text: 'About Us',
+              title: 'Find out more about our organization',
+            },
+          ];
+        each navItem in navItems
+          li.nav-item
+            a.nav-link(href=navItem.link title=navItem.title)= navItem.text

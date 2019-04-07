@@ -1,0 +1,36 @@
+//
+  Built with love by CJ Burkey:
+      - Website: https://cjburkey.com/
+      - Twitter: @ontaironto
+      - Email:   bulletlang@gmail.com
+
+doctype html
+html.h-100(lang='en')
+  head
+    include template/meta
+
+    link(rel='stylesheet' href='/static/css/bootstrap.min.css')/
+    link(rel='stylesheet' href='/static/css/cps-dog-list.css')/
+
+    title Cabarrus Pets Society
+
+  body.d-flex.flex-column.h-100
+    include template/nav
+    
+    main.flex-shrink-0(style='margin-top: 80px')
+      .container
+        if dog === undefined
+          .dog-list
+            #imgLoading.loading-img
+              p #[img.mb-2(src='/static/img/loading_dog_running.gif')/]
+              h5.font-weight-normal.text-center Loading...
+            #dogList.row
+            a#reloadDogs.btn.btn-sm.btn-secondary(href='#')
+        else
+          p Hello world!
+    
+    include template/footer
+    
+    include template/scripts
+    if dog === undefined
+      script(src='/static/js/cps-dog-list.js')
