@@ -2,17 +2,38 @@
 
 $(document).ready(init);
 
+const perPage = 8;
+
 let reloadButton;
+let prevPageButton;
+let nextPageButton;
+let pageText;
 let loadingImg;
 let dogList;
+
+let page = 0;
+let maxPage = 0;
 
 function init() {
     reloadButton = $('#reloadDogs');
     dogList = $('#dogList');
     loadingImg = $('#imgLoading');
+    prevPageButton = $('#prevPage');
+    nextPageButton = $('#nextPage');
+    pageText = $('#pageNumberText');
     
     reloadButton.click(e => {
         e.preventDefault();
+        reloadDogs();
+    });
+    prevPageButton.click(e => {
+        e.preventDefault();
+        if (!loading) page--;
+        reloadDogs();
+    });
+    nextPageButton.click(e => {
+        e.preventDefault();
+        if (!loading) page++;
         reloadDogs();
     });
     
@@ -37,6 +58,10 @@ const dogThumbnailTemplate = (id, name, url) => {
 let loading = false;
 
 function reloadDogs() {
+    // Clamp the page number to make sure it's correct
+    if (page >= maxPage) page = maxPage - 1;
+    if (page < 0) page = 0;
+    
     // Make sure an existing request doesn't exist
     if (loading) return;
     
@@ -52,7 +77,7 @@ function reloadDogs() {
     markLoading(true);
     
     // Retrieve a list of available dogs
-    getDogs(8, 0, dogs => {
+    getDogs(perPage, page, dogs => {
         // Empty the existing dog thumbnails
         dogList.html('');
         
@@ -71,17 +96,22 @@ function reloadDogs() {
 // Update graphics to match loading status
 function markLoading(loading) {
     if (loading) {
+        prevPageButton.addClass('disabled');
+        nextPageButton.addClass('disabled');
         if (reloadButton != null) {
             reloadButton.html('Loading...');
             reloadButton.addClass('disabled');
             loadingImg.show();
         }
     } else {
+        if (page > 0) prevPageButton.removeClass('disabled');
+        if (page < maxPage - 1) nextPageButton.removeClass('disabled');
         if (reloadButton != null) {
             reloadButton.html('Reload list');
             reloadButton.removeClass('disabled');
             loadingImg.hide();
         }
+        pageText.html(`Page ${page + 1}/${maxPage}`);
     }
 }
 
@@ -93,16 +123,17 @@ function getDogs(perPageRaw, pageRaw, callback) {
     $.ajax({
         url: `/api/dog_list/${perPage}/${page}`,
     }).done(e => {
-        if (e == null || e.data == null) {
+        if (e === null || e.data === null) {
             alert('An error occurred while loading the available dogs. Please try reloading the page.');
             callback([]);
             return;
         }
-        if (e.data.alert != null) {
-            alert(`${e.data.alert}. Please try reloading the page.`);
+        if (e.error !== null) {
+            alert(`${e.data.error}. Please try reloading the page.`);
             callback([]);
             return;
         }
+        maxPage = Math.ceil(e.foundRows / perPage);
         
         let dogs = [];
         for (let dogId in e.data) dogs.push(e.data[dogId]);

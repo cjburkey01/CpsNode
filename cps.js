@@ -76,7 +76,13 @@ app.use(route.get('/dogs/:id', async (ctx, id) => {
         }
     ]);
     
-    console.log(JSON.stringify(data, null, 4));
+    if (data === null
+            || data.foundRows === undefined
+            || data.foundRows === null
+            || data.foundRows < 1) {
+        ctx.redirect('/dogs');
+        return;
+    }
     
     // Hacky way to get that first element
     let dat;
@@ -116,8 +122,11 @@ async function processSearch(available, perPage, currentPage, results, filters) 
     dat.error = ((dat !== null && dat.status == 'ok')
         ? null
         : ((dat !== null
+            && dat !== undefined
             && dat.messages !== null
+            && dat.messages !== undefined
             && dat.messages.generalMessages !== null
+            && dat.messages.generalMessages !== undefined
             && dat.messages.generalMessages.length > 0)
                 ? (dat.messages.generalMessages[0].messageText)
                 : 'An error occurred'));

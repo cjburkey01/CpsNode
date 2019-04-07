@@ -25,8 +25,16 @@ html.h-100(lang='en')
         if dog === undefined
           .dog-list
             #imgLoading.loading-img
-              p #[img.mb-2(src='/static/img/loading_dog_running.gif')/]
+              p
+                img.mb-2(src='/static/img/loading_dog_running.gif')/
               h5.font-weight-normal.text-center Loading...
+            .row.mb-2
+              .col-5
+                a#prevPage.btn.btn-block.btn-primary(href='#') &larr; Previous
+              .col-2
+                p#pageNumberText.text-center
+              .col-5
+                a#nextPage.btn.btn-block.btn-primary(href='#') Next &rarr;
             #dogList.row
             a#reloadDogs.btn.btn-sm.btn-secondary(href='#')
         else
