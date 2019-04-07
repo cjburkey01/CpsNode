@@ -1,0 +1,11 @@
+{
+  "name": "cpsnode",
+  "version": "0.1.0",
+  "description": "The NodeJS adaptation of my Laravel application that might be a bit faster",
+  "main": "cps.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "CJ Burkey",
+  "license": "MIT"
+}
